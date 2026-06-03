@@ -19,11 +19,12 @@ class TaskController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
+            'completado' => 'sometimes|boolean',
         ]);
 
         $task = Task::create($data);
 
-        return $task;
+        return response()->json($task, 201);
     }
 
     public function show(Task $task)
@@ -36,12 +37,19 @@ class TaskController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
+            'completado' => 'sometimes|boolean',
         ]);
 
         $task->update($data);
 
         return $task;
-    
+    }
+
+    public function completar(Task $task)
+    {
+        $task->update(['completado' => true]);
+
+        return $task;
     }
 
     public function destroy(Task $task)

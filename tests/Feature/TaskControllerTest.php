@@ -71,4 +71,19 @@ class TaskControllerTest extends TestCase
 
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
+
+    public function test_completar_marks_task_as_completed(): void
+    {
+        $task = Task::factory()->create(['completado' => false]);
+
+        $response = $this->patchJson("/api/tasks/{$task->id}/completar");
+
+        $response->assertStatus(200)
+                 ->assertJsonFragment(['completado' => true]);
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'completado' => true,
+        ]);
+    }
 }
